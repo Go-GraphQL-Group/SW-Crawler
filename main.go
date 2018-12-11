@@ -257,8 +257,15 @@ func main() {
 			b := tx.Bucket([]byte(peopleBucket))
 			jsons, errs := json.Marshal(it)
 			CheckErr(errs)
-			err := b.Put([]byte(string(i)), jsons)
+			err := b.Put([]byte(string(i+1)), jsons)
 			return err
+		})
+
+		db.View(func(tx *bolt.Tx) error {
+			b := tx.Bucket([]byte(peopleBucket))
+			v := b.Get([]byte(string(i + 1)))
+			fmt.Printf("%s\n", v)
+			return nil
 		})
 	}
 
@@ -270,8 +277,15 @@ func main() {
 			b := tx.Bucket([]byte(planetsBucket))
 			jsons, errs := json.Marshal(it)
 			CheckErr(errs)
-			err := b.Put([]byte(string(i)), jsons)
+			err := b.Put([]byte(string(i+1)), jsons)
 			return err
+		})
+
+		db.View(func(tx *bolt.Tx) error {
+			b := tx.Bucket([]byte(planetsBucket))
+			v := b.Get([]byte(string(i + 1)))
+			fmt.Printf("%s\n", v)
+			return nil
 		})
 	}
 
@@ -283,8 +297,15 @@ func main() {
 			b := tx.Bucket([]byte(filmsBucket))
 			jsons, errs := json.Marshal(it)
 			CheckErr(errs)
-			err := b.Put([]byte(string(i)), jsons)
+			err := b.Put([]byte(string(i+1)), jsons)
 			return err
+		})
+
+		db.View(func(tx *bolt.Tx) error {
+			b := tx.Bucket([]byte(filmsBucket))
+			v := b.Get([]byte(string(i + 1)))
+			fmt.Printf("%s\n", v)
+			return nil
 		})
 	}
 
@@ -296,8 +317,15 @@ func main() {
 			b := tx.Bucket([]byte(speciesBucket))
 			jsons, errs := json.Marshal(it)
 			CheckErr(errs)
-			err := b.Put([]byte(string(i)), jsons)
+			err := b.Put([]byte(string(i+1)), jsons)
 			return err
+		})
+
+		db.View(func(tx *bolt.Tx) error {
+			b := tx.Bucket([]byte(speciesBucket))
+			v := b.Get([]byte(string(i + 1)))
+			fmt.Printf("%s\n", v)
+			return nil
 		})
 	}
 
@@ -309,8 +337,15 @@ func main() {
 			b := tx.Bucket([]byte(vehiclesBucket))
 			jsons, errs := json.Marshal(it)
 			CheckErr(errs)
-			err := b.Put([]byte(string(i)), jsons)
+			err := b.Put([]byte(string(i+1)), jsons)
 			return err
+		})
+
+		db.View(func(tx *bolt.Tx) error {
+			b := tx.Bucket([]byte(vehiclesBucket))
+			v := b.Get([]byte(string(i + 1)))
+			fmt.Printf("%s\n", v)
+			return nil
 		})
 	}
 
@@ -322,8 +357,15 @@ func main() {
 			b := tx.Bucket([]byte(starshipsBucket))
 			jsons, errs := json.Marshal(it)
 			CheckErr(errs)
-			err := b.Put([]byte(string(i)), jsons)
+			err := b.Put([]byte(string(i+1)), jsons)
 			return err
+		})
+
+		db.View(func(tx *bolt.Tx) error {
+			b := tx.Bucket([]byte(starshipsBucket))
+			v := b.Get([]byte(string(i + 1)))
+			fmt.Printf("%s\n", v)
+			return nil
 		})
 	}
 }

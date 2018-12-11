@@ -17,7 +17,7 @@ type People struct {
 	Gender     string   `json:"gender"`
 	Homeworld  string   `json:"homeworld"`
 	Films      []string `json:"films"`
-	Specise    string   `json:"specise"`
+	Species    []string `json:"species"`
 	Vehicles   []string `json:"vehicles"`
 	Starships  []string `json:"starships"`
 	Created    string   `json:"created"`
