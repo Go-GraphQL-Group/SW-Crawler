@@ -7,6 +7,7 @@ type SpeciesRes struct {
 }
 
 type Species struct {
+	ID               string
 	Name             string   `json:"name"`
 	Classification   string   `json:"classification"`
 	Designation      string   `json:"designation"`

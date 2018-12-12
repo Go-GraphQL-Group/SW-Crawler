@@ -7,6 +7,7 @@ type VehiclesRes struct {
 }
 
 type Vehicle struct {
+	ID                     string
 	Name                   string   `json:"name"`
 	Model                  string   `json:"model"`
 	Manufacturer           string   `json:"manufacturer"`

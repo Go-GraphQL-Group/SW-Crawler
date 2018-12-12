@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"regexp"
+	"strconv"
 
 	"github.com/Liu-YT/crawler/model"
 	"github.com/boltdb/bolt"
@@ -19,6 +21,10 @@ const speciesBucket = "Specie"
 const starshipsBucket = "Starship"
 const vehiclesBucket = "Vehicle"
 
+const origin = "https://swapi.co/api/"
+
+const replace = "http://localhost:8080/query/"
+
 // "people": "https://swapi.co/api/people/?format=json"
 // "planets": "https://swapi.co/api/planets/?format=json"
 // "films": "https://swapi.co/api/films/?format=json"
@@ -27,7 +33,7 @@ const vehiclesBucket = "Vehicle"
 // "starships": "https://swapi.co/api/starships/?format=json"
 
 // get people
-func peopleGet(url string) *model.PeopleRes {
+func peopleGet(url string) (string, *model.PeopleRes) {
 	res, err := http.Get(url)
 	CheckErr(err)
 	defer res.Body.Close()
@@ -38,18 +44,28 @@ func peopleGet(url string) *model.PeopleRes {
 	page := &model.PeopleRes{}
 	err = json.Unmarshal(body, page)
 	CheckErr(err)
+	next := page.Next
 
-	return page
+	// 正则替换
+	re, _ := regexp.Compile(origin)
+	rep := re.ReplaceAllString(string(body), replace)
+
+	// 替换后结果
+	fmt.Println(rep)
+
+	err = json.Unmarshal([]byte(rep), page)
+	CheckErr(err)
+	return next, page
 }
 
 func getAllPeople() []model.People {
 	var allPeople []model.People
-	res := peopleGet(string("https://swapi.co/api/people/?format=json"))
+	next, res := peopleGet(string("https://swapi.co/api/people/?format=json"))
 	for _, it := range res.Result {
 		allPeople = append(allPeople, it)
 	}
-	for res.Next != "" {
-		res = peopleGet(string(res.Next))
+	for next != "" {
+		next, res = peopleGet(next)
 		for _, it := range res.Result {
 			allPeople = append(allPeople, it)
 		}
@@ -58,7 +74,7 @@ func getAllPeople() []model.People {
 }
 
 // get planets
-func planetsGet(url string) *model.PlanetsRes {
+func planetsGet(url string) (string, *model.PlanetsRes) {
 	res, err := http.Get(url)
 	CheckErr(err)
 	defer res.Body.Close()
@@ -69,18 +85,28 @@ func planetsGet(url string) *model.PlanetsRes {
 	page := &model.PlanetsRes{}
 	err = json.Unmarshal(body, page)
 	CheckErr(err)
+	next := page.Next
 
-	return page
+	// 正则替换
+	re, _ := regexp.Compile(origin)
+	rep := re.ReplaceAllString(string(body), replace)
+
+	// 替换后结果
+	fmt.Println(rep)
+
+	err = json.Unmarshal([]byte(rep), page)
+	CheckErr(err)
+	return next, page
 }
 
 func getAllPlanets() []model.Planet {
 	var allPlanets []model.Planet
-	res := planetsGet(string("https://swapi.co/api/planets/?format=json"))
+	next, res := planetsGet(string("https://swapi.co/api/planets/?format=json"))
 	for _, it := range res.Result {
 		allPlanets = append(allPlanets, it)
 	}
-	for res.Next != "" {
-		res = planetsGet(string(res.Next))
+	for next != "" {
+		next, res = planetsGet(next)
 		for _, it := range res.Result {
 			allPlanets = append(allPlanets, it)
 		}
@@ -89,7 +115,7 @@ func getAllPlanets() []model.Planet {
 }
 
 // get films
-func filmsGet(url string) *model.FilmsRes {
+func filmsGet(url string) (string, *model.FilmsRes) {
 	res, err := http.Get(url)
 	CheckErr(err)
 	defer res.Body.Close()
@@ -100,18 +126,28 @@ func filmsGet(url string) *model.FilmsRes {
 	page := &model.FilmsRes{}
 	err = json.Unmarshal(body, page)
 	CheckErr(err)
+	next := page.Next
 
-	return page
+	// 正则替换
+	re, _ := regexp.Compile(origin)
+	rep := re.ReplaceAllString(string(body), replace)
+
+	// 替换后结果
+	fmt.Println(rep)
+
+	err = json.Unmarshal([]byte(rep), page)
+	CheckErr(err)
+	return next, page
 }
 
 func getAllFilms() []model.Film {
 	var allFilms []model.Film
-	res := filmsGet(string("https://swapi.co/api/films/?format=json"))
+	next, res := filmsGet(string("https://swapi.co/api/films/?format=json"))
 	for _, it := range res.Result {
 		allFilms = append(allFilms, it)
 	}
 	for res.Next != "" {
-		res = filmsGet(string(res.Next))
+		next, res = filmsGet(next)
 		for _, it := range res.Result {
 			allFilms = append(allFilms, it)
 		}
@@ -120,7 +156,7 @@ func getAllFilms() []model.Film {
 }
 
 // get species
-func speciesGet(url string) *model.SpeciesRes {
+func speciesGet(url string) (string, *model.SpeciesRes) {
 	res, err := http.Get(url)
 	CheckErr(err)
 	defer res.Body.Close()
@@ -132,17 +168,28 @@ func speciesGet(url string) *model.SpeciesRes {
 	err = json.Unmarshal(body, page)
 	CheckErr(err)
 
-	return page
+	next := page.Next
+
+	// 正则替换
+	re, _ := regexp.Compile(origin)
+	rep := re.ReplaceAllString(string(body), replace)
+
+	// 替换后结果
+	fmt.Println(rep)
+
+	err = json.Unmarshal([]byte(rep), page)
+	CheckErr(err)
+	return next, page
 }
 
 func getAllSpecies() []model.Species {
 	var allSpecies []model.Species
-	res := speciesGet(string("https://swapi.co/api/species/?format=json"))
+	next, res := speciesGet(string("https://swapi.co/api/species/?format=json"))
 	for _, it := range res.Result {
 		allSpecies = append(allSpecies, it)
 	}
-	for res.Next != "" {
-		res = speciesGet(string(res.Next))
+	for next != "" {
+		next, res = speciesGet(next)
 		for _, it := range res.Result {
 			allSpecies = append(allSpecies, it)
 		}
@@ -151,7 +198,7 @@ func getAllSpecies() []model.Species {
 }
 
 // get vehicles
-func vehiclesGet(url string) *model.VehiclesRes {
+func vehiclesGet(url string) (string, *model.VehiclesRes) {
 	res, err := http.Get(url)
 	CheckErr(err)
 	defer res.Body.Close()
@@ -163,17 +210,28 @@ func vehiclesGet(url string) *model.VehiclesRes {
 	err = json.Unmarshal(body, page)
 	CheckErr(err)
 
-	return page
+	next := page.Next
+
+	// 正则替换
+	re, _ := regexp.Compile(origin)
+	rep := re.ReplaceAllString(string(body), replace)
+
+	// 替换后结果
+	fmt.Println(rep)
+
+	err = json.Unmarshal([]byte(rep), page)
+	CheckErr(err)
+	return next, page
 }
 
 func getAllVehicles() []model.Vehicle {
 	var allVehicles []model.Vehicle
-	res := vehiclesGet(string("https://swapi.co/api/vehicles/?format=json"))
+	next, res := vehiclesGet(string("https://swapi.co/api/vehicles/?format=json"))
 	for _, it := range res.Result {
 		allVehicles = append(allVehicles, it)
 	}
-	for res.Next != "" {
-		res = vehiclesGet(string(res.Next))
+	for next != "" {
+		next, res = vehiclesGet(next)
 		for _, it := range res.Result {
 			allVehicles = append(allVehicles, it)
 		}
@@ -182,7 +240,7 @@ func getAllVehicles() []model.Vehicle {
 }
 
 // get starships
-func starshipsGet(url string) *model.StarshipsRes {
+func starshipsGet(url string) (string, *model.StarshipsRes) {
 	res, err := http.Get(url)
 	CheckErr(err)
 	defer res.Body.Close()
@@ -193,18 +251,28 @@ func starshipsGet(url string) *model.StarshipsRes {
 	page := &model.StarshipsRes{}
 	err = json.Unmarshal(body, page)
 	CheckErr(err)
+	next := page.Next
 
-	return page
+	// 正则替换
+	re, _ := regexp.Compile(origin)
+	rep := re.ReplaceAllString(string(body), replace)
+
+	// 替换后结果
+	fmt.Println(rep)
+
+	err = json.Unmarshal([]byte(rep), page)
+	CheckErr(err)
+	return next, page
 }
 
 func getAllStarships() []model.Starship {
 	var allStarship []model.Starship
-	res := starshipsGet(string("https://swapi.co/api/starships/?format=json"))
+	next, res := starshipsGet(string("https://swapi.co/api/starships/?format=json"))
 	for _, it := range res.Result {
 		allStarship = append(allStarship, it)
 	}
-	for res.Next != "" {
-		res = starshipsGet(string(res.Next))
+	for next != "" {
+		next, res = starshipsGet(next)
 		for _, it := range res.Result {
 			allStarship = append(allStarship, it)
 		}
@@ -255,15 +323,16 @@ func main() {
 	for i, it := range people {
 		db.Update(func(tx *bolt.Tx) error {
 			b := tx.Bucket([]byte(peopleBucket))
+			it.ID = strconv.Itoa(i + 1)
 			jsons, errs := json.Marshal(it)
 			CheckErr(errs)
-			err := b.Put([]byte(string(i+1)), jsons)
+			err := b.Put([]byte(it.ID), jsons)
 			return err
 		})
 
 		db.View(func(tx *bolt.Tx) error {
 			b := tx.Bucket([]byte(peopleBucket))
-			v := b.Get([]byte(string(i + 1)))
+			v := b.Get([]byte(strconv.Itoa(i + 1)))
 			fmt.Printf("%s\n", v)
 			return nil
 		})
@@ -275,15 +344,16 @@ func main() {
 	for i, it := range planests {
 		db.Update(func(tx *bolt.Tx) error {
 			b := tx.Bucket([]byte(planetsBucket))
+			it.ID = strconv.Itoa(i + 1)
 			jsons, errs := json.Marshal(it)
 			CheckErr(errs)
-			err := b.Put([]byte(string(i+1)), jsons)
+			err := b.Put([]byte(it.ID), jsons)
 			return err
 		})
 
 		db.View(func(tx *bolt.Tx) error {
 			b := tx.Bucket([]byte(planetsBucket))
-			v := b.Get([]byte(string(i + 1)))
+			v := b.Get([]byte(strconv.Itoa(i + 1)))
 			fmt.Printf("%s\n", v)
 			return nil
 		})
@@ -295,15 +365,16 @@ func main() {
 	for i, it := range films {
 		db.Update(func(tx *bolt.Tx) error {
 			b := tx.Bucket([]byte(filmsBucket))
+			it.ID = strconv.Itoa(i + 1)
 			jsons, errs := json.Marshal(it)
 			CheckErr(errs)
-			err := b.Put([]byte(string(i+1)), jsons)
+			err := b.Put([]byte(it.ID), jsons)
 			return err
 		})
 
 		db.View(func(tx *bolt.Tx) error {
 			b := tx.Bucket([]byte(filmsBucket))
-			v := b.Get([]byte(string(i + 1)))
+			v := b.Get([]byte(strconv.Itoa(i + 1)))
 			fmt.Printf("%s\n", v)
 			return nil
 		})
@@ -315,15 +386,16 @@ func main() {
 	for i, it := range species {
 		db.Update(func(tx *bolt.Tx) error {
 			b := tx.Bucket([]byte(speciesBucket))
+			it.ID = strconv.Itoa(i + 1)
 			jsons, errs := json.Marshal(it)
 			CheckErr(errs)
-			err := b.Put([]byte(string(i+1)), jsons)
+			err := b.Put([]byte(it.ID), jsons)
 			return err
 		})
 
 		db.View(func(tx *bolt.Tx) error {
 			b := tx.Bucket([]byte(speciesBucket))
-			v := b.Get([]byte(string(i + 1)))
+			v := b.Get([]byte(strconv.Itoa(i + 1)))
 			fmt.Printf("%s\n", v)
 			return nil
 		})
@@ -335,15 +407,16 @@ func main() {
 	for i, it := range vehicles {
 		db.Update(func(tx *bolt.Tx) error {
 			b := tx.Bucket([]byte(vehiclesBucket))
+			it.ID = strconv.Itoa(i + 1)
 			jsons, errs := json.Marshal(it)
 			CheckErr(errs)
-			err := b.Put([]byte(string(i+1)), jsons)
+			err := b.Put([]byte(it.ID), jsons)
 			return err
 		})
 
 		db.View(func(tx *bolt.Tx) error {
 			b := tx.Bucket([]byte(vehiclesBucket))
-			v := b.Get([]byte(string(i + 1)))
+			v := b.Get([]byte(strconv.Itoa(i + 1)))
 			fmt.Printf("%s\n", v)
 			return nil
 		})
@@ -355,15 +428,16 @@ func main() {
 	for i, it := range starships {
 		db.Update(func(tx *bolt.Tx) error {
 			b := tx.Bucket([]byte(starshipsBucket))
+			it.ID = strconv.Itoa(i + 1)
 			jsons, errs := json.Marshal(it)
 			CheckErr(errs)
-			err := b.Put([]byte(string(i+1)), jsons)
+			err := b.Put([]byte(it.ID), jsons)
 			return err
 		})
 
 		db.View(func(tx *bolt.Tx) error {
 			b := tx.Bucket([]byte(starshipsBucket))
-			v := b.Get([]byte(string(i + 1)))
+			v := b.Get([]byte(strconv.Itoa(i + 1)))
 			fmt.Printf("%s\n", v)
 			return nil
 		})

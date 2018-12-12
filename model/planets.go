@@ -7,6 +7,7 @@ type PlanetsRes struct {
 }
 
 type Planet struct {
+	ID              string
 	Name            string   `json:"name"`
 	Rotation_period string   `json:"rotation_period"`
 	Orbital_period  string   `json:"orbital_period"`

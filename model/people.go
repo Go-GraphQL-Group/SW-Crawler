@@ -7,6 +7,7 @@ type PeopleRes struct {
 }
 
 type People struct {
+	ID         string
 	Name       string   `json:"name"`
 	Heigth     string   `json:"height"`
 	Mass       string   `json:"mass"`

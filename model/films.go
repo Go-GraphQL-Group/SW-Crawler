@@ -7,6 +7,7 @@ type FilmsRes struct {
 }
 
 type Film struct {
+	ID            string
 	Title         string   `json:"title"`
 	Episode_id    int      `json:"episode_id"`
 	Opening_crawl string   `json:"opening_crawl"`

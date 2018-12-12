@@ -7,6 +7,7 @@ type StarshipsRes struct {
 }
 
 type Starship struct {
+	ID                     string
 	Name                   string   `json:"name"`
 	Model                  string   `json:"model"`
 	Manufacturer           string   `json:"manufacturer"`
