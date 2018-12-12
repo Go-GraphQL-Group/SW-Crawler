@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"os"
 	"regexp"
-	"strconv"
 
+	"github.com/Liu-YT/crawler/dbOp"
 	"github.com/Liu-YT/crawler/model"
 	"github.com/boltdb/bolt"
 )
@@ -22,6 +22,8 @@ const starshipsBucket = "Starship"
 const vehiclesBucket = "Vehicle"
 
 const origin = "https://swapi.co/api/"
+
+const origin2 = "http://localhost:8080/query/+[a-zA-Z_]+/"
 
 const replace = "http://localhost:8080/query/"
 
@@ -49,9 +51,6 @@ func peopleGet(url string) (string, *model.PeopleRes) {
 	// 正则替换
 	re, _ := regexp.Compile(origin)
 	rep := re.ReplaceAllString(string(body), replace)
-
-	// 替换后结果
-	fmt.Println(rep)
 
 	err = json.Unmarshal([]byte(rep), page)
 	CheckErr(err)
@@ -91,9 +90,6 @@ func planetsGet(url string) (string, *model.PlanetsRes) {
 	re, _ := regexp.Compile(origin)
 	rep := re.ReplaceAllString(string(body), replace)
 
-	// 替换后结果
-	fmt.Println(rep)
-
 	err = json.Unmarshal([]byte(rep), page)
 	CheckErr(err)
 	return next, page
@@ -131,9 +127,6 @@ func filmsGet(url string) (string, *model.FilmsRes) {
 	// 正则替换
 	re, _ := regexp.Compile(origin)
 	rep := re.ReplaceAllString(string(body), replace)
-
-	// 替换后结果
-	fmt.Println(rep)
 
 	err = json.Unmarshal([]byte(rep), page)
 	CheckErr(err)
@@ -174,9 +167,6 @@ func speciesGet(url string) (string, *model.SpeciesRes) {
 	re, _ := regexp.Compile(origin)
 	rep := re.ReplaceAllString(string(body), replace)
 
-	// 替换后结果
-	fmt.Println(rep)
-
 	err = json.Unmarshal([]byte(rep), page)
 	CheckErr(err)
 	return next, page
@@ -216,9 +206,6 @@ func vehiclesGet(url string) (string, *model.VehiclesRes) {
 	re, _ := regexp.Compile(origin)
 	rep := re.ReplaceAllString(string(body), replace)
 
-	// 替换后结果
-	fmt.Println(rep)
-
 	err = json.Unmarshal([]byte(rep), page)
 	CheckErr(err)
 	return next, page
@@ -257,9 +244,6 @@ func starshipsGet(url string) (string, *model.StarshipsRes) {
 	re, _ := regexp.Compile(origin)
 	rep := re.ReplaceAllString(string(body), replace)
 
-	// 替换后结果
-	fmt.Println(rep)
-
 	err = json.Unmarshal([]byte(rep), page)
 	CheckErr(err)
 	return next, page
@@ -288,7 +272,8 @@ func CheckErr(err error) {
 	}
 }
 
-func main() {
+// 存储信息
+func storeData() {
 	db, err := bolt.Open("./data/data.db", 0600, nil)
 	if err != nil {
 		log.Fatal(err)
@@ -320,10 +305,13 @@ func main() {
 	// store people data
 	fmt.Println("people")
 	people := getAllPeople()
-	for i, it := range people {
+	for _, it := range people {
 		db.Update(func(tx *bolt.Tx) error {
 			b := tx.Bucket([]byte(peopleBucket))
-			it.ID = strconv.Itoa(i + 1)
+			// 正则替换
+			re, _ := regexp.Compile(origin2)
+			rep := re.ReplaceAllString(it.Url, "")
+			it.ID = string(rep)[0 : len(string(rep))-1]
 			jsons, errs := json.Marshal(it)
 			CheckErr(errs)
 			err := b.Put([]byte(it.ID), jsons)
@@ -332,7 +320,7 @@ func main() {
 
 		db.View(func(tx *bolt.Tx) error {
 			b := tx.Bucket([]byte(peopleBucket))
-			v := b.Get([]byte(strconv.Itoa(i + 1)))
+			v := b.Get([]byte(it.ID))
 			fmt.Printf("%s\n", v)
 			return nil
 		})
@@ -341,10 +329,13 @@ func main() {
 	// store planets data
 	fmt.Println("planets")
 	planests := getAllPlanets()
-	for i, it := range planests {
+	for _, it := range planests {
 		db.Update(func(tx *bolt.Tx) error {
 			b := tx.Bucket([]byte(planetsBucket))
-			it.ID = strconv.Itoa(i + 1)
+			// 正则替换
+			re, _ := regexp.Compile(origin2)
+			rep := re.ReplaceAllString(it.Url, "")
+			it.ID = string(rep)[0 : len(string(rep))-1]
 			jsons, errs := json.Marshal(it)
 			CheckErr(errs)
 			err := b.Put([]byte(it.ID), jsons)
@@ -353,7 +344,7 @@ func main() {
 
 		db.View(func(tx *bolt.Tx) error {
 			b := tx.Bucket([]byte(planetsBucket))
-			v := b.Get([]byte(strconv.Itoa(i + 1)))
+			v := b.Get([]byte(it.ID))
 			fmt.Printf("%s\n", v)
 			return nil
 		})
@@ -362,10 +353,13 @@ func main() {
 	// store films data
 	fmt.Println("films")
 	films := getAllFilms()
-	for i, it := range films {
+	for _, it := range films {
 		db.Update(func(tx *bolt.Tx) error {
 			b := tx.Bucket([]byte(filmsBucket))
-			it.ID = strconv.Itoa(i + 1)
+			// 正则替换
+			re, _ := regexp.Compile(origin2)
+			rep := re.ReplaceAllString(it.Url, "")
+			it.ID = string(rep)[0 : len(string(rep))-1]
 			jsons, errs := json.Marshal(it)
 			CheckErr(errs)
 			err := b.Put([]byte(it.ID), jsons)
@@ -374,7 +368,7 @@ func main() {
 
 		db.View(func(tx *bolt.Tx) error {
 			b := tx.Bucket([]byte(filmsBucket))
-			v := b.Get([]byte(strconv.Itoa(i + 1)))
+			v := b.Get([]byte(it.ID))
 			fmt.Printf("%s\n", v)
 			return nil
 		})
@@ -383,10 +377,13 @@ func main() {
 	// store species data
 	fmt.Println("species")
 	species := getAllSpecies()
-	for i, it := range species {
+	for _, it := range species {
 		db.Update(func(tx *bolt.Tx) error {
 			b := tx.Bucket([]byte(speciesBucket))
-			it.ID = strconv.Itoa(i + 1)
+			// 正则替换
+			re, _ := regexp.Compile(origin2)
+			rep := re.ReplaceAllString(it.Url, "")
+			it.ID = string(rep)[0 : len(string(rep))-1]
 			jsons, errs := json.Marshal(it)
 			CheckErr(errs)
 			err := b.Put([]byte(it.ID), jsons)
@@ -395,7 +392,7 @@ func main() {
 
 		db.View(func(tx *bolt.Tx) error {
 			b := tx.Bucket([]byte(speciesBucket))
-			v := b.Get([]byte(strconv.Itoa(i + 1)))
+			v := b.Get([]byte(it.ID))
 			fmt.Printf("%s\n", v)
 			return nil
 		})
@@ -404,10 +401,13 @@ func main() {
 	// store vehicles data
 	fmt.Println("vehicles")
 	vehicles := getAllVehicles()
-	for i, it := range vehicles {
+	for _, it := range vehicles {
 		db.Update(func(tx *bolt.Tx) error {
 			b := tx.Bucket([]byte(vehiclesBucket))
-			it.ID = strconv.Itoa(i + 1)
+			// 正则替换
+			re, _ := regexp.Compile(origin2)
+			rep := re.ReplaceAllString(it.Url, "")
+			it.ID = string(rep)[0 : len(string(rep))-1]
 			jsons, errs := json.Marshal(it)
 			CheckErr(errs)
 			err := b.Put([]byte(it.ID), jsons)
@@ -416,7 +416,7 @@ func main() {
 
 		db.View(func(tx *bolt.Tx) error {
 			b := tx.Bucket([]byte(vehiclesBucket))
-			v := b.Get([]byte(strconv.Itoa(i + 1)))
+			v := b.Get([]byte(it.ID))
 			fmt.Printf("%s\n", v)
 			return nil
 		})
@@ -425,10 +425,13 @@ func main() {
 	// store starships data
 	fmt.Println("starships")
 	starships := getAllStarships()
-	for i, it := range starships {
+	for _, it := range starships {
 		db.Update(func(tx *bolt.Tx) error {
 			b := tx.Bucket([]byte(starshipsBucket))
-			it.ID = strconv.Itoa(i + 1)
+			// 正则替换
+			re, _ := regexp.Compile(origin2)
+			rep := re.ReplaceAllString(it.Url, "")
+			it.ID = string(rep)[0 : len(string(rep))-1]
 			jsons, errs := json.Marshal(it)
 			CheckErr(errs)
 			err := b.Put([]byte(it.ID), jsons)
@@ -437,9 +440,37 @@ func main() {
 
 		db.View(func(tx *bolt.Tx) error {
 			b := tx.Bucket([]byte(starshipsBucket))
-			v := b.Get([]byte(strconv.Itoa(i + 1)))
+			v := b.Get([]byte(it.ID))
 			fmt.Printf("%s\n", v)
 			return nil
 		})
 	}
+}
+
+func main() {
+	// storeData()
+
+	/* test get people */
+	// people := dbOp.GetPeopleByID("1")
+	// fmt.Println(people)
+
+	/* test get film */
+	// film := dbOp.GetFilmByID("1")
+	// fmt.Println(film)
+
+	/* test get planet */
+	// planet := dbOp.GetPlanetByID("1")
+	// fmt.Println(planet)
+
+	/* test get specie */
+	// specie := dbOp.GetSpeciesByID("1")
+	// fmt.Println(specie)
+
+	/* test get starship */
+	// starship := dbOp.GetStarshipByID("10")
+	// fmt.Println(starship)
+
+	/* test get vehicle */
+	vehicle := dbOp.GetVehicleByID("14")
+	fmt.Println(vehicle)
 }
