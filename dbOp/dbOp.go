@@ -40,7 +40,9 @@ func GetPeopleByID(ID string) (error, string) {
 	dbErr := db.View(func(tx *bolt.Tx) error {
 		peoBuck := tx.Bucket([]byte(peopleBucket))
 		v := peoBuck.Get([]byte(ID))
-
+		if v == nil {
+			return nil
+		}
 		// 正则替换
 		re, _ := regexp.Compile(origin)
 		rep := re.ReplaceAllString(string(v), replace)
@@ -106,7 +108,9 @@ func GetFilmByID(ID string) (error, string) {
 	dbErr := db.View(func(tx *bolt.Tx) error {
 		filmBuck := tx.Bucket([]byte(filmsBucket))
 		v := filmBuck.Get([]byte(ID))
-
+		if v == nil {
+			return nil
+		}
 		// 正则替换
 		re, _ := regexp.Compile(origin)
 		rep := re.ReplaceAllString(string(v), replace)
@@ -173,7 +177,9 @@ func GetPlanetByID(ID string) (error, string) {
 	dbErr := db.View(func(tx *bolt.Tx) error {
 		plaBuck := tx.Bucket([]byte(planetsBucket))
 		v := plaBuck.Get([]byte(ID))
-
+		if v == nil {
+			return nil
+		}
 		// 正则替换
 		re, _ := regexp.Compile(origin)
 		rep := re.ReplaceAllString(string(v), replace)
@@ -215,7 +221,9 @@ func GetSpeciesByID(ID string) (error, string) {
 	db.View(func(tx *bolt.Tx) error {
 		specBuck := tx.Bucket([]byte(speciesBucket))
 		v := specBuck.Get([]byte(ID))
-
+		if v == nil {
+			return nil
+		}
 		// 正则替换
 		re, _ := regexp.Compile(origin)
 		rep := re.ReplaceAllString(string(v), replace)
@@ -264,7 +272,9 @@ func GetStarshipByID(ID string) (error, string) {
 	dbErr := db.View(func(tx *bolt.Tx) error {
 		starBuck := tx.Bucket([]byte(starshipsBucket))
 		v := starBuck.Get([]byte(ID))
-
+		if v == nil {
+			return nil
+		}
 		// 正则替换
 		re, _ := regexp.Compile(origin)
 		rep := re.ReplaceAllString(string(v), replace)
@@ -306,7 +316,9 @@ func GetVehicleByID(ID string) (error, string) {
 	dbErr := db.View(func(tx *bolt.Tx) error {
 		vehicBuck := tx.Bucket([]byte(vehiclesBucket))
 		v := vehicBuck.Get([]byte(ID))
-
+		if v == nil {
+			return nil
+		}
 		// 正则替换
 		re, _ := regexp.Compile(origin)
 		rep := re.ReplaceAllString(string(v), replace)
