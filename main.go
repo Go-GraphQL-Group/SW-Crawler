@@ -9,8 +9,8 @@ import (
 	"os"
 	"regexp"
 
-	"github.com/Liu-YT/crawler/dbOp"
-	"github.com/Liu-YT/crawler/model"
+	"github.com/Go-GraphQL-Group/SW-Crawler/dbOp"
+	"github.com/Go-GraphQL-Group/SW-Crawler/model"
 	"github.com/boltdb/bolt"
 )
 
@@ -471,6 +471,6 @@ func main() {
 	// fmt.Println(starship)
 
 	/* test get vehicle */
-	vehicle := dbOp.GetVehicleByID("14")
+	_, vehicle := dbOp.GetVehicleByID("14")
 	fmt.Println(vehicle)
 }
