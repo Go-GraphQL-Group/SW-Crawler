@@ -10,12 +10,12 @@ import (
 	"os"
 	"regexp"
 
-	"github.com/Liu-YT/crawler/model"
+	"github.com/Go-GraphQL-Group/SW-Crawler/model"
 	"github.com/boltdb/bolt"
 )
 
 /*
-*	ID 大于 0
+ *	ID 大于 0
  */
 const peopleBucket = "People"
 const filmsBucket = "Film"
