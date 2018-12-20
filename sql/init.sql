@@ -37,7 +37,7 @@ create table if not exists planet (
     Residents char(200),
     Films char(200),
     primary key(_id)
-); 
+);
 
 create table if not exists species (
 	_id INT NOT NULL AUTO_INCREMENT,
