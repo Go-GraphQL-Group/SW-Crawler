@@ -25,7 +25,7 @@ const vehiclesBucket = "Vehicle"
 
 const (
 	userName = "root"
-	password = "2craWbasil"
+	password = ""
 	ip       = "127.0.0.1"
 	port     = "3306"
 	dbName   = "data"
