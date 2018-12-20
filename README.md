@@ -8,7 +8,7 @@
   * `starships`
 
 * `Version 1 BoltDB`
-  * `data/data.db`    为生成的相应的`BoltDB`数据库
+  * `data/bolt/data.db`    为生成的相应的`BoltDB`数据库
     * `show/db.txt`     数据库存储的内容显示
   * `dbOp/dbOp.go`    提供一系列数据库获取数据封装好的的方法
     * 返回样例展示
@@ -21,4 +21,5 @@
 
 
 * `Version 2 MySQL`
+  * `data/mysql/data.db`    为导出的`MySQL`数据库
 
