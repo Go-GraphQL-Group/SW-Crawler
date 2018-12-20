@@ -7,7 +7,7 @@ type PeopleRes struct {
 }
 
 type People struct {
-	ID         string
+	ID         string	`xorm:"id"`
 	Name       string   `json:"name"`
 	Heigth     string   `json:"height"`
 	Mass       string   `json:"mass"`
@@ -21,7 +21,7 @@ type People struct {
 	Species    []string `json:"species"`
 	Vehicles   []string `json:"vehicles"`
 	Starships  []string `json:"starships"`
-	Created    string   `json:"created"`
-	Edited     string   `json:"edited"`
-	Url        string   `json:"url"`
+	Created    string   `json:"created" xorm:"-"`
+	Edited     string   `json:"edited" xorm:"-"`
+	Url        string   `json:"url" xorm:"-"`
 }

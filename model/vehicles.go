@@ -7,7 +7,7 @@ type VehiclesRes struct {
 }
 
 type Vehicle struct {
-	ID                     string
+	ID                     string	`xorm:"id"`
 	Name                   string   `json:"name"`
 	Model                  string   `json:"model"`
 	Manufacturer           string   `json:"manufacturer"`
@@ -21,7 +21,7 @@ type Vehicle struct {
 	Vehicle_class          string   `json:"vehicle_class"`
 	Pilots                 []string `json:"pilots"`
 	Films                  []string `json:"films"`
-	Created                string   `json:"created"`
-	Edited                 string   `json:"edited"`
-	Url                    string   `json:"url"`
+	Created                string   `json:"created" xorm:"-"`
+	Edited                 string   `json:"edited" xorm:"-"`
+	Url                    string   `json:"url" xorm:"-"`
 }

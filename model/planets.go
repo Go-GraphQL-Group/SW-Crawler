@@ -7,7 +7,7 @@ type PlanetsRes struct {
 }
 
 type Planet struct {
-	ID              string
+	ID              string	 `xorm:"id"`
 	Name            string   `json:"name"`
 	Rotation_period string   `json:"rotation_period"`
 	Orbital_period  string   `json:"orbital_period"`
@@ -19,7 +19,7 @@ type Planet struct {
 	Population      string   `json:"population"`
 	Residents       []string `json:"residents"`
 	Films           []string `json:"films"`
-	Created         string   `json:"created"`
-	Edited          string   `json:"edited"`
-	Url             string   `json:"url"`
+	Created         string   `json:"created" xorm:"-"`
+	Edited          string   `json:"edited" xorm:"-"`
+	Url             string   `json:"url" xorm:"-"`
 }

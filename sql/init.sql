@@ -39,7 +39,7 @@ create table if not exists planet (
     primary key(_id)
 ); 
 
-create table if not exists specie (
+create table if not exists species (
 	_id INT NOT NULL AUTO_INCREMENT,
     ID char(100),
     Name char(100),

@@ -7,7 +7,7 @@ type SpeciesRes struct {
 }
 
 type Species struct {
-	ID               string
+	ID               string	  `xorm:"id"`
 	Name             string   `json:"name"`
 	Classification   string   `json:"classification"`
 	Designation      string   `json:"designation"`
@@ -20,7 +20,7 @@ type Species struct {
 	Language         string   `json:"language"`
 	People           []string `json:"people"`
 	Films            []string `json:"films"`
-	Created          string   `json:"created"`
-	Edited           string   `json:"edited"`
-	Url              string   `json:"url"`
+	Created          string   `json:"created" xorm:"-"`
+	Edited           string   `json:"edited" xorm:"-"`
+	Url              string   `json:"url" xorm:"-"`
 }

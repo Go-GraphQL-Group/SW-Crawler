@@ -7,7 +7,7 @@ type StarshipsRes struct {
 }
 
 type Starship struct {
-	ID                     string
+	ID                     string	`xorm:"id"`
 	Name                   string   `json:"name"`
 	Model                  string   `json:"model"`
 	Manufacturer           string   `json:"manufacturer"`
@@ -19,11 +19,11 @@ type Starship struct {
 	Cargo_capacity         string   `json:"cargo_capacity"`
 	Consumables            string   `json:"consumables"`
 	Hyperdrive_rating      string   `json:"hyperdrive_rating"`
-	MGLT                   string   `json:"MGLT"`
+	MGLT                   string   `json:"MGLT" xorm:"mglt"`
 	Starship_class         string   `json:"starship_class"`
 	Pilots                 []string `json:"pilots"`
 	Films                  []string `json:"films"`
-	Created                string   `json:"created"`
-	Edited                 string   `json:"edited"`
-	Url                    string   `json:"url"`
+	Created                string   `json:"created" xorm:"-"`
+	Edited                 string   `json:"edited" xorm:"-"`
+	Url                    string   `json:"url" xorm:"-"`
 }
