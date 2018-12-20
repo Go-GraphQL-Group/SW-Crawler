@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/Go-GraphQL-Group/SW-Crawler/model"
+	mySql "github.com/Go-GraphQL-Group/SW-Crawler/sql"
 	"github.com/boltdb/bolt"
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -489,11 +490,11 @@ func main() {
 	// _, vehicle := dbOp.GetVehicleByID("14")
 	// fmt.Println(vehicle)
 
-	// db, err := bolt.Open("./data/bolt/data.db", 0600, nil)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// defer db.Close()
+	db, err := bolt.Open("./data/bolt/data.db", 0600, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
 
 	//构建连接："用户名:密码@tcp(IP:端口)/数据库?charset=utf8"
 	path := strings.Join([]string{userName, ":", password, "@tcp(", ip, ":", port, ")/", dbName, "?charset=utf8"}, "")
@@ -513,15 +514,6 @@ func main() {
 	}
 	fmt.Println("connnect success")
 
-	ID := 1
-	stmt, err := DB.Prepare("SELECT name FROM people WHERE ID = ?")
-	if err != nil {
-		log.Fatal(err)
-	}
-	rows, err := stmt.Query(ID)
-	fmt.Println(rows)
-	fmt.Println(err)
-
 	/* insert */
 	// db.View(func(tx *bolt.Tx) error {
 	// 	b := tx.Bucket([]byte(peopleBucket))
@@ -532,7 +524,7 @@ func main() {
 
 	// 		people := &model.People{}
 	// 		err = json.Unmarshal([]byte(rep), people)
-	// 		sql.InsertPeople(people)
+	// 		mySql.InsertPeople(DB, people)
 	// 		return nil
 	// 	})
 	// 	return nil
@@ -546,7 +538,7 @@ func main() {
 
 	// 		film := &model.Film{}
 	// 		err = json.Unmarshal([]byte(rep), film)
-	// 		sql.InsertFilm(film)
+	// 		mySql.InsertFilm(DB, film)
 	// 		return nil
 	// 	})
 	// 	return nil
@@ -561,7 +553,7 @@ func main() {
 
 	// 		planet := &model.Planet{}
 	// 		err = json.Unmarshal([]byte(rep), planet)
-	// 		sql.InsertPlanet(planet)
+	// 		mySql.InsertPlanet(DB, planet)
 	// 		return nil
 	// 	})
 	// 	return nil
@@ -575,7 +567,7 @@ func main() {
 
 	// 		specie := &model.Species{}
 	// 		err = json.Unmarshal([]byte(rep), specie)
-	// 		sql.InsertSpecie(specie)
+	// 		mySql.InsertSpecie(DB, specie)
 	// 		return nil
 	// 	})
 	// 	return nil
@@ -589,23 +581,23 @@ func main() {
 
 	// 		starship := &model.Starship{}
 	// 		err = json.Unmarshal([]byte(rep), starship)
-	// 		sql.InsertStarship(starship)
+	// 		mySql.InsertStarship(DB, starship)
 	// 		return nil
 	// 	})
 	// 	return nil
 	// })
-	// db.View(func(tx *bolt.Tx) error {
-	// 	b := tx.Bucket([]byte(vehiclesBucket))
-	// 	b.ForEach(func(k, v []byte) error {
-	// 		// 正则替换
-	// 		re, _ := regexp.Compile(origin2)
-	// 		rep := re.ReplaceAllString(string(v), NoneRe)
+	db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte(vehiclesBucket))
+		b.ForEach(func(k, v []byte) error {
+			// 正则替换
+			re, _ := regexp.Compile(origin2)
+			rep := re.ReplaceAllString(string(v), NoneRe)
 
-	// 		vehicle := &model.Vehicle{}
-	// 		err = json.Unmarshal([]byte(rep), vehicle)
-	// 		sql.InsertVehicle(vehicle)
-	// 		return nil
-	// 	})
-	// 	return nil
-	// })
+			vehicle := &model.Vehicle{}
+			err = json.Unmarshal([]byte(rep), vehicle)
+			mySql.InsertVehicle(DB, vehicle)
+			return nil
+		})
+		return nil
+	})
 }
