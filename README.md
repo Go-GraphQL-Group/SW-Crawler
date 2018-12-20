@@ -21,5 +21,5 @@
 
 
 * `Version 2 MySQL`
-  * `data/mysql/data.db`    为导出的`MySQL`数据库
+  * `data/mysql/`    为导出的`MySQL`数据库
 
