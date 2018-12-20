@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -8,10 +9,11 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"strings"
 
-	"github.com/Go-GraphQL-Group/SW-Crawler/dbOp"
 	"github.com/Go-GraphQL-Group/SW-Crawler/model"
 	"github.com/boltdb/bolt"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 const peopleBucket = "People"
@@ -21,11 +23,21 @@ const speciesBucket = "Specie"
 const starshipsBucket = "Starship"
 const vehiclesBucket = "Vehicle"
 
+const (
+	userName = "root"
+	password = "2craWbasil"
+	ip       = "127.0.0.1"
+	port     = "3306"
+	dbName   = "data"
+)
+
 const origin = "https://swapi.co/api/"
 
 const origin2 = "http://localhost:8080/query/+[a-zA-Z_]+/"
 
 const replace = "http://localhost:8080/query/"
+
+const NoneRe = ""
 
 // "people": "https://swapi.co/api/people/?format=json"
 // "planets": "https://swapi.co/api/planets/?format=json"
@@ -447,6 +459,9 @@ func storeData() {
 	}
 }
 
+//Db数据库连接池
+var DB *sql.DB
+
 func main() {
 	// storeData()
 
@@ -471,6 +486,126 @@ func main() {
 	// fmt.Println(starship)
 
 	/* test get vehicle */
-	_, vehicle := dbOp.GetVehicleByID("14")
-	fmt.Println(vehicle)
+	// _, vehicle := dbOp.GetVehicleByID("14")
+	// fmt.Println(vehicle)
+
+	// db, err := bolt.Open("./data/bolt/data.db", 0600, nil)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// defer db.Close()
+
+	//构建连接："用户名:密码@tcp(IP:端口)/数据库?charset=utf8"
+	path := strings.Join([]string{userName, ":", password, "@tcp(", ip, ":", port, ")/", dbName, "?charset=utf8"}, "")
+
+	//打开数据库,前者是驱动名，所以要导入： _ "github.com/go-sql-driver/mysql"
+	DB, err := sql.Open("mysql", path)
+	fmt.Println(err)
+	defer DB.Close()
+	//设置数据库最大连接数
+	DB.SetConnMaxLifetime(100)
+	//设置上数据库最大闲置连接数
+	DB.SetMaxIdleConns(10)
+	//验证连接
+	if err := DB.Ping(); err != nil {
+		fmt.Println("opon database fail")
+		return
+	}
+	fmt.Println("connnect success")
+
+	ID := 1
+	stmt, err := DB.Prepare("SELECT name FROM people WHERE ID = ?")
+	if err != nil {
+		log.Fatal(err)
+	}
+	rows, err := stmt.Query(ID)
+	fmt.Println(rows)
+	fmt.Println(err)
+
+	/* insert */
+	// db.View(func(tx *bolt.Tx) error {
+	// 	b := tx.Bucket([]byte(peopleBucket))
+	// 	b.ForEach(func(k, v []byte) error {
+	// 		// 正则替换
+	// 		re, _ := regexp.Compile(origin2)
+	// 		rep := re.ReplaceAllString(string(v), NoneRe)
+
+	// 		people := &model.People{}
+	// 		err = json.Unmarshal([]byte(rep), people)
+	// 		sql.InsertPeople(people)
+	// 		return nil
+	// 	})
+	// 	return nil
+	// })
+	// db.View(func(tx *bolt.Tx) error {
+	// 	b := tx.Bucket([]byte(filmsBucket))
+	// 	b.ForEach(func(k, v []byte) error {
+	// 		// 正则替换
+	// 		re, _ := regexp.Compile(origin2)
+	// 		rep := re.ReplaceAllString(string(v), NoneRe)
+
+	// 		film := &model.Film{}
+	// 		err = json.Unmarshal([]byte(rep), film)
+	// 		sql.InsertFilm(film)
+	// 		return nil
+	// 	})
+	// 	return nil
+	// })
+
+	// db.View(func(tx *bolt.Tx) error {
+	// 	b := tx.Bucket([]byte(planetsBucket))
+	// 	b.ForEach(func(k, v []byte) error {
+	// 		// 正则替换
+	// 		re, _ := regexp.Compile(origin2)
+	// 		rep := re.ReplaceAllString(string(v), NoneRe)
+
+	// 		planet := &model.Planet{}
+	// 		err = json.Unmarshal([]byte(rep), planet)
+	// 		sql.InsertPlanet(planet)
+	// 		return nil
+	// 	})
+	// 	return nil
+	// })
+	// db.View(func(tx *bolt.Tx) error {
+	// 	b := tx.Bucket([]byte(speciesBucket))
+	// 	b.ForEach(func(k, v []byte) error {
+	// 		// 正则替换
+	// 		re, _ := regexp.Compile(origin2)
+	// 		rep := re.ReplaceAllString(string(v), NoneRe)
+
+	// 		specie := &model.Species{}
+	// 		err = json.Unmarshal([]byte(rep), specie)
+	// 		sql.InsertSpecie(specie)
+	// 		return nil
+	// 	})
+	// 	return nil
+	// })
+	// db.View(func(tx *bolt.Tx) error {
+	// 	b := tx.Bucket([]byte(starshipsBucket))
+	// 	b.ForEach(func(k, v []byte) error {
+	// 		// 正则替换
+	// 		re, _ := regexp.Compile(origin2)
+	// 		rep := re.ReplaceAllString(string(v), NoneRe)
+
+	// 		starship := &model.Starship{}
+	// 		err = json.Unmarshal([]byte(rep), starship)
+	// 		sql.InsertStarship(starship)
+	// 		return nil
+	// 	})
+	// 	return nil
+	// })
+	// db.View(func(tx *bolt.Tx) error {
+	// 	b := tx.Bucket([]byte(vehiclesBucket))
+	// 	b.ForEach(func(k, v []byte) error {
+	// 		// 正则替换
+	// 		re, _ := regexp.Compile(origin2)
+	// 		rep := re.ReplaceAllString(string(v), NoneRe)
+
+	// 		vehicle := &model.Vehicle{}
+	// 		err = json.Unmarshal([]byte(rep), vehicle)
+	// 		sql.InsertVehicle(vehicle)
+	// 		return nil
+	// 	})
+	// 	return nil
+	// })
 }
