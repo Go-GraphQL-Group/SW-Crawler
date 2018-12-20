@@ -88,7 +88,7 @@ create table if not exists starship (
     Cargo_capacity char(100),
     Consumables char(100),
     Hyperdrive_rating char(100),
-    MGLT char(00),
+    MGLT char(100),
     Starship_class char(100),
     Pilots char(200),
     Films char(200),

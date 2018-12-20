@@ -12,7 +12,7 @@ import (
 //数据库配置
 const (
 	userName = "root"
-	password = "2craWbasil"
+	password = ""
 	ip       = "127.0.0.1"
 	port     = "3306"
 	dbName   = "data"
@@ -23,10 +23,9 @@ const origin = "http://localhost:8080/query/+[a-zA-Z_]+/"
 
 const replace = ""
 
-//Db数据库连接池
-var DB *sql.DB
-
 func InitDB() {
+	//Db数据库连接池
+	var DB *sql.DB
 	//构建连接："用户名:密码@tcp(IP:端口)/数据库?charset=utf8"
 	path := strings.Join([]string{userName, ":", password, "@tcp(", ip, ":", port, ")/", dbName, "?charset=utf8"}, "")
 
@@ -44,7 +43,7 @@ func InitDB() {
 	fmt.Println("connnect success")
 }
 
-func InsertPeople(people *model.People) bool {
+func InsertPeople(DB *sql.DB, people *model.People) bool {
 	//开启事务
 	tx, err := DB.Begin()
 	// defer DB.Close()
@@ -54,25 +53,41 @@ func InsertPeople(people *model.People) bool {
 		return false
 	}
 
-	films := ""
-	for _, it := range people.Films {
-		films += it[0:len(it)-1] + "&"
+	films := "["
+	for i, it := range people.Films {
+		films += "\"" + it[0:len(it)-1] + "\""
+		if i != len(people.Films)-1 {
+			films += ","
+		}
 	}
+	films += "]"
 
-	species := ""
-	for _, it := range people.Species {
-		species += it[0:len(it)-1] + "&"
+	species := "["
+	for i, it := range people.Species {
+		species += "\"" + it[0:len(it)-1] + "\""
+		if i != len(people.Species)-1 {
+			species += ","
+		}
 	}
+	species += "]"
 
-	vehicles := ""
-	for _, it := range people.Vehicles {
-		vehicles += it[0:len(it)-1] + "&"
+	vehicles := "["
+	for i, it := range people.Vehicles {
+		vehicles += "\"" + it[0:len(it)-1] + "\""
+		if i != len(people.Vehicles)-1 {
+			vehicles += ","
+		}
 	}
+	vehicles += "]"
 
-	starships := ""
-	for _, it := range people.Starships {
-		starships += it[0:len(it)-1] + "&"
+	starships := "["
+	for i, it := range people.Starships {
+		starships += "\"" + it[0:len(it)-1] + "\""
+		if i != len(people.Starships)-1 {
+			starships += ","
+		}
 	}
+	starships += "]"
 
 	//准备sql语句
 	stmt, err := tx.Prepare("INSERT INTO people (`ID`, `Name`, `Heigth`, `Mass`, `Hair_color`, `Skin_color`, `Eye_color`, `Birth_year`, `Gender`, `Homeworld`, `Films`, `Species`, `Vehicles`, `Starships`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
@@ -94,7 +109,7 @@ func InsertPeople(people *model.People) bool {
 	return true
 }
 
-func InsertFilm(film *model.Film) bool {
+func InsertFilm(DB *sql.DB, film *model.Film) bool {
 	//开启事务
 	tx, err := DB.Begin()
 	// defer DB.Close()
@@ -104,30 +119,50 @@ func InsertFilm(film *model.Film) bool {
 		return false
 	}
 
-	actor := ""
-	for _, it := range film.Character {
-		actor += it[0:len(it)-1] + "&"
+	actor := "["
+	for i, it := range film.Character {
+		actor += "\"" + it[0:len(it)-1] + "\""
+		if i != len(film.Character)-1 {
+			actor += ","
+		}
 	}
+	actor += "]"
 
-	species := ""
-	for _, it := range film.Species {
-		species += it[0:len(it)-1] + "&"
+	species := "["
+	for i, it := range film.Species {
+		species += "\"" + it[0:len(it)-1] + "\""
+		if i != len(film.Species)-1 {
+			species += ","
+		}
 	}
+	species += "]"
 
-	vehicles := ""
-	for _, it := range film.Vehicles {
-		vehicles += it[0:len(it)-1] + "&"
+	vehicles := "["
+	for i, it := range film.Vehicles {
+		vehicles += "\"" + it[0:len(it)-1] + "\""
+		if i != len(film.Vehicles)-1 {
+			vehicles += ","
+		}
 	}
+	vehicles += "]"
 
-	starships := ""
-	for _, it := range film.Starships {
-		starships += it[0:len(it)-1] + "&"
+	starships := "["
+	for i, it := range film.Starships {
+		starships += "\"" + it[0:len(it)-1] + "\""
+		if i != len(film.Starships)-1 {
+			starships += ","
+		}
 	}
+	starships += "]"
 
-	planets := ""
-	for _, it := range film.Planets {
-		planets += it[0:len(it)-1] + "&"
+	planets := "["
+	for i, it := range film.Planets {
+		planets += "\"" + it[0:len(it)-1] + "\""
+		if i != len(film.Planets)-1 {
+			planets += ","
+		}
 	}
+	planets += "]"
 
 	//准备sql语句
 	stmt, err := tx.Prepare("INSERT INTO film (`ID`, `Title`, `Episode_id`, `Opening_crawl`, `Director`, `Producer`, `Release_data`, `Actor`, `Planets`, `Starships`, `Vehicles`, `Species`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
@@ -151,7 +186,7 @@ func InsertFilm(film *model.Film) bool {
 	return true
 }
 
-func InsertPlanet(planet *model.Planet) bool {
+func InsertPlanet(DB *sql.DB, planet *model.Planet) bool {
 	//开启事务
 	tx, err := DB.Begin()
 	// defer DB.Close()
@@ -161,15 +196,23 @@ func InsertPlanet(planet *model.Planet) bool {
 		return false
 	}
 
-	residents := ""
-	for _, it := range planet.Residents {
-		residents += it[0:len(it)-1] + "&"
+	residents := "["
+	for i, it := range planet.Residents {
+		residents += "\"" + it[0:len(it)-1] + "\""
+		if i != len(planet.Residents)-1 {
+			residents += ","
+		}
 	}
+	residents += "]"
 
-	films := ""
-	for _, it := range planet.Films {
-		films += it[0:len(it)-1] + "&"
+	films := "["
+	for i, it := range planet.Films {
+		films += "\"" + it[0:len(it)-1] + "\""
+		if i != len(planet.Films)-1 {
+			films += ","
+		}
 	}
+	films += "]"
 
 	//准备sql语句
 	stmt, err := tx.Prepare("INSERT INTO planet (`ID`, `Name`, `Rotation_period`, `Orbital_period`, `Diameter`, `Climate`, `Gravity`, `Terrain`, `Surface_water`, `Population`, `Residents`, `Films`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
@@ -193,7 +236,7 @@ func InsertPlanet(planet *model.Planet) bool {
 	return true
 }
 
-func InsertSpecie(specie *model.Species) bool {
+func InsertSpecie(DB *sql.DB, specie *model.Species) bool {
 	//开启事务
 	tx, err := DB.Begin()
 	// defer DB.Close()
@@ -203,15 +246,24 @@ func InsertSpecie(specie *model.Species) bool {
 		return false
 	}
 
-	people := ""
-	for _, it := range specie.People {
-		people += it[0:len(it)-1] + "&"
+	people := "["
+	for i, it := range specie.People {
+		people += "\"" + it[0:len(it)-1] + "\""
+		if i != len(specie.People)-1 {
+			people += ","
+		}
 	}
+	people += "]"
 
-	films := ""
-	for _, it := range specie.Films {
-		films += it[0:len(it)-1] + "&"
+	films := "["
+	for i, it := range specie.Films {
+		films += "\"" + it[0:len(it)-1] + "\""
+		if i != len(specie.Films)-1 {
+			films += ","
+		}
 	}
+	films += "]"
+
 	home := ""
 	if specie.Homeworld != "" {
 		home = specie.Homeworld[0 : len(specie.Homeworld)-1]
@@ -238,7 +290,7 @@ func InsertSpecie(specie *model.Species) bool {
 	return true
 }
 
-func InsertStarship(starship *model.Starship) bool {
+func InsertStarship(DB *sql.DB, starship *model.Starship) bool {
 	//开启事务
 	tx, err := DB.Begin()
 	// defer DB.Close()
@@ -248,15 +300,23 @@ func InsertStarship(starship *model.Starship) bool {
 		return false
 	}
 
-	pilots := ""
-	for _, it := range starship.Pilots {
-		pilots += it[0:len(it)-1] + "&"
+	pilots := "["
+	for i, it := range starship.Pilots {
+		pilots += "\"" + it[0:len(it)-1] + "\""
+		if i != len(starship.Pilots)-1 {
+			pilots += ","
+		}
 	}
+	pilots += "]"
 
-	films := ""
-	for _, it := range starship.Films {
-		films += it[0:len(it)-1] + "&"
+	films := "["
+	for i, it := range starship.Films {
+		films += "\"" + it[0:len(it)-1] + "\""
+		if i != len(starship.Films)-1 {
+			films += ","
+		}
 	}
+	films += "]"
 	//准备sql语句
 	stmt, err := tx.Prepare("INSERT INTO starship (`ID`, `Name`, `Model`, `Manufacturer`, `Cost_in_credits`, `Length`, `Max_atmosphering_speed`, `Crew`, `Passenger`, `Cargo_capacity`, `Consumables`, `Hyperdrive_rating`, `MGLT`, `Starship_class`, `Pilots`, `Films`) VALUES (?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
 	if err != nil {
@@ -279,7 +339,7 @@ func InsertStarship(starship *model.Starship) bool {
 	return true
 }
 
-func InsertVehicle(vehicle *model.Vehicle) bool {
+func InsertVehicle(DB *sql.DB, vehicle *model.Vehicle) bool {
 	//开启事务
 	tx, err := DB.Begin()
 	// defer DB.Close()
@@ -289,15 +349,23 @@ func InsertVehicle(vehicle *model.Vehicle) bool {
 		return false
 	}
 
-	pilots := ""
-	for _, it := range vehicle.Pilots {
-		pilots += it[0:len(it)-1] + "&"
+	pilots := "["
+	for i, it := range vehicle.Pilots {
+		pilots += "\"" + it[0:len(it)-1] + "\""
+		if i != len(vehicle.Pilots)-1 {
+			pilots += ","
+		}
 	}
+	pilots += "]"
 
-	films := ""
-	for _, it := range vehicle.Films {
-		films += it[0:len(it)-1] + "&"
+	films := "["
+	for i, it := range vehicle.Films {
+		films += "\"" + it[0:len(it)-1] + "\""
+		if i != len(vehicle.Films)-1 {
+			films += ","
+		}
 	}
+	films += "]"
 	//准备sql语句
 	stmt, err := tx.Prepare("INSERT INTO vehicle (`ID`, `Name`, `Model`, `Manufacturer`, `Cost_in_credits`, `Length`, `Max_atmosphering_speed`, `Crew`, `Passenger`, `Cargo_capacity`, `Consumables`, `Vehicle_class`, `Pilots`, `Films`) VALUES (?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?)")
 	if err != nil {
