@@ -25,8 +25,8 @@ const starshipsBucket = "Starship"
 const vehiclesBucket = "Vehicle"
 
 const (
-	userName = "liuyh73"
-	password = "7home7Tmade"
+	userName = "root"
+	password = ""
 	ip       = "127.0.0.1"
 	port     = "3306"
 	dbName   = "data"
@@ -287,7 +287,7 @@ func CheckErr(err error) {
 
 // 存储信息
 func storeData() {
-	db, err := bolt.Open("./data/data.db", 0600, nil)
+	db, err := bolt.Open("./data/bolt/data.db", 0600, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -501,7 +501,6 @@ func main() {
 
 	//打开数据库,前者是驱动名，所以要导入： _ "github.com/go-sql-driver/mysql"
 	DB, err := sql.Open("mysql", path)
-	fmt.Println(err)
 	defer DB.Close()
 	//设置数据库最大连接数
 	DB.SetConnMaxLifetime(100)
@@ -515,7 +514,7 @@ func main() {
 	fmt.Println("connnect success")
 
 	/* insert */
-    db.View(func(tx *bolt.Tx) error {
+	db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(peopleBucket))
 		b.ForEach(func(k, v []byte) error {
 			// 正则替换
@@ -600,4 +599,5 @@ func main() {
 		})
 		return nil
 	})
+
 }
