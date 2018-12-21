@@ -269,7 +269,7 @@ func InsertSpecie(DB *sql.DB, specie *model.Species) bool {
 		home = specie.Homeworld[0 : len(specie.Homeworld)-1]
 	}
 	//准备sql语句
-	stmt, err := tx.Prepare("INSERT INTO specie (`ID`, `Name`, `Classification`, `Designation`, `Average_height`, `Skin_colors`, `Eye_colors`, `Average_lifespan`, `Homeworld`, `Language`, `People`, `Films`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+	stmt, err := tx.Prepare("INSERT INTO species (`ID`, `Name`, `Classification`, `Designation`, `Average_height`, `Skin_colors`, `Hair_colors`, `Eye_colors`, `Average_lifespan`, `Homeworld`, `Language`, `People`, `Films`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
 	if err != nil {
 		fmt.Println("Prepare fail")
 		fmt.Println(err)
@@ -277,7 +277,7 @@ func InsertSpecie(DB *sql.DB, specie *model.Species) bool {
 	}
 
 	//将参数传递到sql语句中并且执行
-	res, err := stmt.Exec(specie.ID, specie.Name, specie.Classification, specie.Designation, specie.Average_height, specie.Skin_colors, specie.Eye_colors, specie.Average_lifespan, home, specie.Language, people, films)
+	res, err := stmt.Exec(specie.ID, specie.Name, specie.Classification, specie.Designation, specie.Average_height, specie.Skin_colors, specie.Hair_colors, specie.Eye_colors, specie.Average_lifespan, home, specie.Language, people, films)
 	if err != nil {
 		fmt.Println("Exec fail")
 		fmt.Println(err)

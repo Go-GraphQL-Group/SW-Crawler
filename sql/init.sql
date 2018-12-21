@@ -47,6 +47,7 @@ create table if not exists species (
     Designation char(100),
     Average_height char(100),
     Skin_colors char(100),
+    Hair_colors char(100),
     Eye_colors char(100),
     Average_lifespan char(100),
     Homeworld char(100),

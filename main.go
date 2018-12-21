@@ -25,8 +25,8 @@ const starshipsBucket = "Starship"
 const vehiclesBucket = "Vehicle"
 
 const (
-	userName = "root"
-	password = ""
+	userName = "liuyh73"
+	password = "7home7Tmade"
 	ip       = "127.0.0.1"
 	port     = "3306"
 	dbName   = "data"
@@ -515,77 +515,77 @@ func main() {
 	fmt.Println("connnect success")
 
 	/* insert */
-	// db.View(func(tx *bolt.Tx) error {
-	// 	b := tx.Bucket([]byte(peopleBucket))
-	// 	b.ForEach(func(k, v []byte) error {
-	// 		// 正则替换
-	// 		re, _ := regexp.Compile(origin2)
-	// 		rep := re.ReplaceAllString(string(v), NoneRe)
+    db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte(peopleBucket))
+		b.ForEach(func(k, v []byte) error {
+			// 正则替换
+			re, _ := regexp.Compile(origin2)
+			rep := re.ReplaceAllString(string(v), NoneRe)
 
-	// 		people := &model.People{}
-	// 		err = json.Unmarshal([]byte(rep), people)
-	// 		mySql.InsertPeople(DB, people)
-	// 		return nil
-	// 	})
-	// 	return nil
-	// })
-	// db.View(func(tx *bolt.Tx) error {
-	// 	b := tx.Bucket([]byte(filmsBucket))
-	// 	b.ForEach(func(k, v []byte) error {
-	// 		// 正则替换
-	// 		re, _ := regexp.Compile(origin2)
-	// 		rep := re.ReplaceAllString(string(v), NoneRe)
+			people := &model.People{}
+			err = json.Unmarshal([]byte(rep), people)
+			mySql.InsertPeople(DB, people)
+			return nil
+		})
+		return nil
+	})
+	db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte(filmsBucket))
+		b.ForEach(func(k, v []byte) error {
+			// 正则替换
+			re, _ := regexp.Compile(origin2)
+			rep := re.ReplaceAllString(string(v), NoneRe)
 
-	// 		film := &model.Film{}
-	// 		err = json.Unmarshal([]byte(rep), film)
-	// 		mySql.InsertFilm(DB, film)
-	// 		return nil
-	// 	})
-	// 	return nil
-	// })
+			film := &model.Film{}
+			err = json.Unmarshal([]byte(rep), film)
+			mySql.InsertFilm(DB, film)
+			return nil
+		})
+		return nil
+	})
 
-	// db.View(func(tx *bolt.Tx) error {
-	// 	b := tx.Bucket([]byte(planetsBucket))
-	// 	b.ForEach(func(k, v []byte) error {
-	// 		// 正则替换
-	// 		re, _ := regexp.Compile(origin2)
-	// 		rep := re.ReplaceAllString(string(v), NoneRe)
+	db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte(planetsBucket))
+		b.ForEach(func(k, v []byte) error {
+			// 正则替换
+			re, _ := regexp.Compile(origin2)
+			rep := re.ReplaceAllString(string(v), NoneRe)
 
-	// 		planet := &model.Planet{}
-	// 		err = json.Unmarshal([]byte(rep), planet)
-	// 		mySql.InsertPlanet(DB, planet)
-	// 		return nil
-	// 	})
-	// 	return nil
-	// })
-	// db.View(func(tx *bolt.Tx) error {
-	// 	b := tx.Bucket([]byte(speciesBucket))
-	// 	b.ForEach(func(k, v []byte) error {
-	// 		// 正则替换
-	// 		re, _ := regexp.Compile(origin2)
-	// 		rep := re.ReplaceAllString(string(v), NoneRe)
+			planet := &model.Planet{}
+			err = json.Unmarshal([]byte(rep), planet)
+			mySql.InsertPlanet(DB, planet)
+			return nil
+		})
+		return nil
+	})
+	db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte(speciesBucket))
+		b.ForEach(func(k, v []byte) error {
+			// 正则替换
+			re, _ := regexp.Compile(origin2)
+			rep := re.ReplaceAllString(string(v), NoneRe)
 
-	// 		specie := &model.Species{}
-	// 		err = json.Unmarshal([]byte(rep), specie)
-	// 		mySql.InsertSpecie(DB, specie)
-	// 		return nil
-	// 	})
-	// 	return nil
-	// })
-	// db.View(func(tx *bolt.Tx) error {
-	// 	b := tx.Bucket([]byte(starshipsBucket))
-	// 	b.ForEach(func(k, v []byte) error {
-	// 		// 正则替换
-	// 		re, _ := regexp.Compile(origin2)
-	// 		rep := re.ReplaceAllString(string(v), NoneRe)
+			specie := &model.Species{}
+			err = json.Unmarshal([]byte(rep), specie)
+			mySql.InsertSpecie(DB, specie)
+			return nil
+		})
+		return nil
+	})
+	db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte(starshipsBucket))
+		b.ForEach(func(k, v []byte) error {
+			// 正则替换
+			re, _ := regexp.Compile(origin2)
+			rep := re.ReplaceAllString(string(v), NoneRe)
 
-	// 		starship := &model.Starship{}
-	// 		err = json.Unmarshal([]byte(rep), starship)
-	// 		mySql.InsertStarship(DB, starship)
-	// 		return nil
-	// 	})
-	// 	return nil
-	// })
+			starship := &model.Starship{}
+			err = json.Unmarshal([]byte(rep), starship)
+			mySql.InsertStarship(DB, starship)
+			return nil
+		})
+		return nil
+	})
 	db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(vehiclesBucket))
 		b.ForEach(func(k, v []byte) error {
